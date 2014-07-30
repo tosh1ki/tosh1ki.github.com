@@ -1,0 +1,110 @@
+---
+layout: page
+title: "imas"
+description: "about imas"
+---
+{% include JB/setup %}
+
+## 「アイドルマスター データベース」を使う ##
+[データ取得API / キャラクター - アイドルマスター データベース (情報まとめ)](http://api.imas-db.jp/character.html)
+
+から得られたアイマスの情報を使ってグラフ描画の練習をする．
+
+<!--more-->
+
+### データの取得 ###
+`wget`で持ってくる．一応`sleep`を入れつつ取得する．
+```bash
+for i in {1..6};do
+    sleep 5;
+    wget "api.imas-db.jp/character/list?type="$i -O $i.txt;
+done;
+```
+
+### 何かしらグラフを描いてみる ###
+データベースには各キャラのよみがなの情報が含まれているので，これを使ってみる．
+
+各アイドルには`cute`,`passion`,`cool`の3つの属性がそれぞれ割り当てられるはず[^hazu]なので，この属性と各アイドルの名前の頭のひらがなの関係を見てみる．この関係を見るために，各属性ごとに「名前の頭のひらがなが『あ行』であるアイドルの割合」「名前の頭のひらがなが『か行』であるアイドルの割合」・・・を計算して，それを以下の様な棒グラフにした．
+
+[^hazu]: `character_type`の欄に各キャラのid（と思われる）文字列が入っている場合もあった．仕様なのか間違いなのかよくわからなかったが，そこまでモチベーションも無いので3つの属性が割り当てられているキャラに限定して話を進める．
+
+このグラフからは読み取れないが，それぞれの属性?(`cute`,`passion`,`cool`)は大体100人程度である．
+
+<a href="http://f.hatena.ne.jp/tosh1ki/20140503010412"><img src="http://img.f.hatena.ne.jp/images/fotolife/t/tosh1ki/20140503/20140503010412.png" alt="20140503010412"></a>
+
+このグラフからは，`cute`は『あ行』が多くて『た行』が少ないといった程度の情報しか読み取れない．
+
+とはいえ，もう少ししっかりと調べれば特徴をつかめそうな気もする．
+
+### 作図用のソースコード ###
+```python
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import json
+
+if __name__ == '__main__':
+
+    ## データの読み込み
+    df = pd.DataFrame()
+
+    for i in range(1,7):
+        f = open(str(i)+'.txt')
+        jsondata = json.load(f)
+        f.close()
+
+        _df = pd.DataFrame.from_dict(jsondata[u'character_list'])
+        df = pd.concat((df,_df))
+
+
+    ## 描画
+    width = 0.35
+    fig,axes = plt.subplots(nrows=3, ncols=1)
+
+    for c,_class in enumerate(['cute','passion','cool']):
+        print _class
+        class_list = []
+        for regex in [u'^[あ-お]',u'^[か-こ]',u'^[さ-そ]',u'^[た-と]',u'^[な-の]',
+                        u'^[は-ほ]',u'^[ま-も]',u'^[や-よ]',u'^[ら-ろ]',u'^[わ-ん]',
+                        u'^[が-ご]',u'^[ざ-ぞ]',u'^[だ-ど]',u'^[ぱ-ぽ]',u'^[ば-ぼ]']:
+            df_class = df[df.class_name==_class]
+            _index = df_class.name_ruby.str.contains(regex)
+            class_list.append([regex,_index.mean()])
+
+        cdf = pd.DataFrame(class_list)
+        ind = np.arange(len(cdf[1])) + width
+
+        ax = axes[c]
+        ax.bar(ind,cdf[1],width)
+        ax.set_xticks(ind)
+
+        if c < 2:
+            ax.set_xticklabels([])
+        else:
+            ax.set_xticklabels(cdf[0], rotation=45)
+
+        ax.set_ylim((0.0,0.35))
+        ax.set_ylabel(_class)
+        ax.grid()
+
+        if c % 2 == 1:
+            ax.yaxis.set_label_position('right')
+            ax.yaxis.tick_right()
+
+
+    plt.subplots_adjust(hspace=0.0)
+    plt.show()
+
+```
+
+### まとめ ###
+> アイドルマスターに対して否定的な(ネガキャン等を行っている)サイト・ソフトウェア等でのご利用はお断りします。
+
+>[データ取得API - アイドルマスター データベース (情報まとめ)](http://api.imas-db.jp/#terms)
+
+アイドルマスター最高！
+
+> Written with [StackEdit](https://stackedit.io/).
