@@ -10,9 +10,9 @@ highlighter: pygments
 # Themes are encouraged to use these universal variables 
 # so be sure to set them if your theme uses them.
 #
-title : テスト
-tagline: Site Tagline
-author :
+title : 盗んだ統計で走り出す
+tagline: Markdownとか色々置く
+author : 
   name : tosh1ki
 #  email :
   github : tosh1ki
@@ -130,6 +130,5 @@ JB :
   #   ./_includes/custom/[HELPER]
   # where [HELPER] is the name of the helper you are overriding.
   
-
   markdown: kramdown
   encoding: UTF-8
