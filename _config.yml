@@ -84,7 +84,7 @@ JB :
   comments :
     provider : disqus
     disqus :
-      short_name : tosh1ki
+      short_name : tosh1kigithubio
     livefyre :
       site_id : 123
     intensedebate :
