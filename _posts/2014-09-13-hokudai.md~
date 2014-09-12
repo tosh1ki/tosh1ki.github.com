@@ -1,0 +1,8 @@
+---
+layout: post
+title: "hokudai"
+description: ""
+category: 
+tags: []
+---
+{% include JB/setup %}
