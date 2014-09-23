@@ -1,0 +1,8 @@
+---
+layout: post
+title: "lmridge"
+description: ""
+category: 
+tags: []
+---
+{% include JB/setup %}
