@@ -1,0 +1,10 @@
+---
+layout: page
+title: ipython notebook置き場
+tagline: 
+---
+{% include JB/setup %}
+
+URLを`html`から`ipynb`に変えるとipython notebookのファイルに飛びます．
+
+
