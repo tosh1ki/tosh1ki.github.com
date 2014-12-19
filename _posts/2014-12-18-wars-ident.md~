@@ -1,0 +1,8 @@
+---
+layout: post
+title: "wars ident"
+description: ""
+category: 
+tags: []
+---
+{% include JB/setup %}
