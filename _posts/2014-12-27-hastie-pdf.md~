@@ -1,0 +1,8 @@
+---
+layout: post
+title: "hastie pdf"
+description: ""
+category: 
+tags: []
+---
+{% include JB/setup %}
