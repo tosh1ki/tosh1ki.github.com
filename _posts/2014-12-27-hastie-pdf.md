@@ -9,6 +9,12 @@ tags: [Python,備忘録]
 
 無料でダウンロードできる[The Elements of Statistical Learning](http://statweb.stanford.edu/~tibs/ElemStatLearn/)のPDFが使いにくいので，ブックマークをつけて余白を切り取る．
 
+以下の方法を[Convex Optimization – Boyd and Vandenberghe](http://stanford.edu/~boyd/cvxbook/)にも試したところ，下図のように使いやすいPDFが得られた．
+
+<img src="/image/2014-12-27/example1.png" alt="example1" style="width:50%;height:auto;"><img src="/image/2014-12-27/example2.png" alt="example2" style="width:50%;height:auto;">
+
+PDF閲覧には[ezPDF Reader](https://play.google.com/store/apps/details?id=udk.android.reader&hl=ja)を使用した．
+
 # やったこと
 
 ## 事前準備
