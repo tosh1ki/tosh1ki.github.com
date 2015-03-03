@@ -23,3 +23,4 @@ tagline: 工事中
 URLを`hoge.html`から`hoge.ipynb`に変えるとipython notebookのファイルに飛びます．
 
 - [将棋ウォーズで削除されたアカウントの棋譜を検討してみる](/ipynb/junpe_.html)
+- [ニコニコ動画のコメントを可視化する](/ipynb/nico-an.html)
