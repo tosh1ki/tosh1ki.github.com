@@ -1,8 +1,0 @@
----
-layout: post
-title: "gaussian_process"
-description: ""
-category: 
-tags: []
----
-{% include JB/setup %}
