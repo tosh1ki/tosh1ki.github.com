@@ -20,7 +20,7 @@ PDF閲覧には[ezPDF Reader](https://play.google.com/store/apps/details?id=udk.
 ## 事前準備
 [The Elements of Statistical Learning - Data Mining, Inference, and Prediction, Second Edition](http://www.springer.com/computer/ai/book/978-0-387-84857-0) の table of contents のPDFですべてのテキストを選択してTXTファイルにコピペしておく[^haihu]．このままだと目次のページのヘッダ(ex. `xiv Contents`)が紛れていたり，改行がおかしくなっていたりするので手作業で修正しておく．
 
-参考文献などを参考にして[briss](http://sourceforge.net/projects/briss/)をインストールしておく．
+参考文献などを参考にしてpdftkや[briss](http://sourceforge.net/projects/briss/)をインストールしておく．
 
 [^haihu]: 配布されているHastie本の目次はタイトルとページ数がなぜか別カラムになっているので同じことをしてもうまく行かない
 
@@ -56,7 +56,23 @@ brissを起動
 # ソースコード
 <script src="https://gist.github.com/tosh1ki/347d7b395c0104ec42ef.js"></script>
 
+# 追記
+
+PDF版で空白のページが削除されている場合[^empty]は自分で空白のページを挿入する必要がある．
+
+[^empty]: 例えば，チャプターの境目などにある空白ページがなぜか削除されていたりした．
+
+{% highlight bash %}
+echo "" | ps2pdf -sPAPERSIZE=jisb5 - empty.pdf
+pdftk A=before.pdf B=empty.pdf cat A1-98 B1 A99-119 B1 A120-158 B1 A159-end output inserted.pdf
+{% endhighlight %}
+
+ps2pdfなどで適当な空白ページを作成して，pdftkで挿入する．
+
+
 # 参考文献
 - [PDFのしおりを編集する \| CMSの構築ならRCMS \- あらゆる要望に応える最強のCMS](https://www.r-cms.jp/rcms-develop/list/article/id=323)
 - [PDFをBrissでkindle用に余白を切り取る — そこはかとなく書くよん。](http://tdoc.info/blog/2013/01/11/briss_kindle.html)
 - ["The Elements of Statistical Learning"のpdfの余白を削る - Wolfeyes Bioinformatics beta](http://yagays.github.io/blog/2013/05/22/esl-pdf-trimming/)
+- [insert a blank page into a PDF using ghostscript or pdftk - Unix & Linux Stack Exchange](http://unix.stackexchange.com/questions/15992/insert-a-blank-page-into-a-pdf-using-ghostscript-or-pdftk)
+- [pdftk - Insert a blank page between each existing page in a PDF document - Stack Overflow](http://stackoverflow.com/questions/12942486/insert-a-blank-page-between-each-existing-page-in-a-pdf-document)
