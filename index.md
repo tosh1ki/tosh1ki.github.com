@@ -19,8 +19,8 @@ tagline: 工事中
   {% endfor %}
 </ul>
 
-<h2> ipython notebook </h2>
-URLを`hoge.html`から`hoge.ipynb`に変えるとipython notebookのファイルに飛びます．
+<h2> IPython notebook </h2>
+URLを`hoge.html`から`hoge.ipynb`に変えるとIPython notebookのファイルに飛びます．
 
 - [将棋ウォーズで削除されたアカウントの棋譜を検討してみる](/ipynb/junpe_.html)
 - [ニコニコ動画のコメントを可視化する](/ipynb/nico-an.html)
