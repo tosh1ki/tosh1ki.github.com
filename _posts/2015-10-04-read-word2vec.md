@@ -24,7 +24,7 @@ tags: [ソースコードを読む, NLP]
 
 [^gensim]: <https://github.com/piskvorky/gensim/blob/develop/gensim/models/word2vec.py> の`class Word2Vec` の部分
 
-この記事では，"word2vec" はMikolovらの手法を実装したc言語のプログラム (<https://code.google.com/p/word2vec/>) を指す言葉として用いる．
+この記事では，"word2vec" はMikolovらの手法を実装したC言語のプログラム (<https://code.google.com/p/word2vec/>) を指す言葉として用いる．
 
 
 # 高速化の技法
@@ -48,7 +48,7 @@ word2vec では，
 
 ## 乱数の関数呼び出しコストの削減
 
-word2vec では negative sampling などで乱数を用いる部分がある．このとき，word2vec では以下のように，C言語の `rand` 関数を使わずに，わざわざ自前で線形合同法の乱数生成器をベタ書きしている．これはおそらく関数呼び出しコストを削減するための処置?だろう．とはいえ，インライン関数とかマクロとかで書けばわざわざ何回も乱数生成器をベタ書きせずに済むでは…? という気もする．
+word2vec では negative sampling などで乱数を用いる部分がある．このとき，word2vec では以下のように，C言語の `rand` 関数を使わずに，わざわざ自前で線形合同法の乱数生成器をベタ書きしている．これはおそらく関数呼び出しコストを削減するための処置?だろう．とはいえ，インライン関数とかマクロとかで書けばわざわざ何回も乱数生成器をベタ書きせずに済むのでは…? という気もする．
 
 {% highlight C %}
 next_random = next_random * (unsigned long long)25214903917 + 11;
