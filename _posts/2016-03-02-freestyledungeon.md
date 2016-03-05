@@ -10,6 +10,8 @@ tags: [data-an,graph,Python]
 
 **「フリースタイルダンジョン」** における最強のラッパーを，**Massey の手法** に基づくレーティングによって検討してみます．
 
+分析で使った Jupyter Notebook は[ここ](/ipynb/freestyle.html)に公開しています．
+
 ![就活](/image/2016-03-02/shukatsu.jpg)
 
 (↑[#13／フリースタイルダンジョン - YouTube](https://www.youtube.com/watch?v=oOw-cI3m6dw) より)
