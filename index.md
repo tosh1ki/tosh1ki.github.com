@@ -1,7 +1,6 @@
 ---
 layout: page
 title: メインページ
-tagline: 工事中
 ---
 {% include JB/setup %}
 
