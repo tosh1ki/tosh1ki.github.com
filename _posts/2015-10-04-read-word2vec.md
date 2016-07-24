@@ -8,7 +8,7 @@ tags: [ソースコードを読む, NLP]
 {% include JB/setup %}
 
 
-1,2年くらい前から自然言語処理界隈などを賑わせているらしい[word2vec](https://code.google.com/p/word2vec/)[^mikolov2013]は，その実行速度が**非常に速い**ことで有名でもある[^fast][^fast2]が，その一方で，ソースコードが非常に読みにくいことが一部で知られている[^unreadable]．例えば，`a`, `b`などの1文字の変数があったりとか，一部で論文に一切記載のない手法の改良?が数点施されていたりする．本記事では，諸事情でword2vecの解読をしたけど結局その話は使わないことになった筆者が，**「高速化の技法」「論文に記載のない変更点」「その他」**の3点について備忘録として雑に説明していく．(なお，何か誤り等あったらコメント，twitterで言及などで**指摘していただけるとありがたいです**)
+1,2年くらい前から自然言語処理界隈などを賑わせているらしい[word2vec](https://code.google.com/p/word2vec/)[^mikolov2013]は，その実行速度が**非常に速い**ことで有名でもある[^fast][^fast2]が，その一方で，ソースコードが非常に読みにくいことが一部で知られている[^unreadable]．例えば，`a`, `b`などの1文字の変数があったりとか，一部で論文に一切記載のない手法の改良?が数点施されていたりする．本記事では，諸事情でword2vecの解読をしたけど結局その話は使わないことになった筆者が，**「高速化の技法」「論文に記載のない変更点」「その他」**の3点について備忘録として雑に説明していく．
 
 [^mikolov2013]: Mikolov, T., Chen, K., Corrado, G., & Dean, J. (2013). Distributed Representations of Words and Phrases and their Compositionality. Nips, 1–9. Retrieved from <http://papers.nips.cc/paper/5021-distributed-representations-of-words-and-phrases-and-their-compositionality.pdf>
 [^fast]: <https://twitter.com/unnonouno/status/625677637864689667>
@@ -58,16 +58,18 @@ if (ran < (next_random & 0xFFFF) / (real)65536) continue;
 
 ## Negative sampling 用の Unigram Table の構成
 
-`InitUnigramTable` 関数で Unigram table `table` (tableという名前のグローバル変数) を構成している．一様ランダムに `table` の要素を取得することで，原論文[^mikolov2013]の 2.2 の最後の方に書かれている negative sampling に必要な $P_n(w)$ が実現できる．
+`InitUnigramTable` 関数で Unigram table `table` (tableという名前のグローバル変数) を構成している．一様ランダムに `table` の要素を取得することで，原論文[^mikolov2013]の 2.2 の最後の方に書かれている， negative sampling に必要な $P_n(w)$ が実現できる．
 
-# 論文に記載のない手法の変更点
-論文に記載のない手法の変更点としては，発見しただけでも以下の3点が挙げられる．
+# 論文に記述のない変更点
+論文と実装で異なっている点としては，発見しただけでも以下の2点が挙げられる．
 
 * 並列化
-* contextの窓の幅をランダムで短くする
-* 学習率の調整
+* <s>contextの窓の幅をランダムで短くする</s> (Efficient Estimation of Word Representations in Vector Space に記載があった．)
 
 以下それぞれについて見ていく．
+
+**(追記)** 論文に記述のない変更点については，[岡崎先生の解説動画](https://youtu.be/EyL_TC17MkQ?t=25m20s)においてもいくつか指摘されている．
+
 
 ## 並列化
 word2vec では，多少無理な並列化を行っている．これについては，専門家が書いた詳しい資料[^okazaki]があるのでそちらを参照して欲しい．きちんと計測したわけではないが，並列化により数倍は速くなるので，これも word2vec の速さの秘訣と言えるだろう．
@@ -75,18 +77,10 @@ word2vec では，多少無理な並列化を行っている．これについ�
 [^okazaki]: Word2vecの並列実行時の学習速度の改善 [http://www.slideshare.net/naoakiokazaki/word2vec](http://www.slideshare.net/naoakiokazaki/word2vec)
 
 ## contextの窓の幅をランダムで短くする
-word2vec の実装において，学習に使う単語を変える度に `b = next_random % window;` を使って窓の幅をランダムで短くしている．これについては Google Groups での言及も見つけられなかったので，本当によくわからない．そういうものなんだろうか．
+word2vec の実装において，学習に使う単語を変える度に `b = next_random % window;` を使って窓の幅をランダムで短くしている．<s>これについては Google Groups での言及も見つけられなかったので，本当によくわからない．そういうものなんだろうか．
 
-## 学習率の調整
-学習が進むごとに学習率を小さくするようにしている．
+**(追記)** よく読んだら "Efficient Estimation of Word Representations in Vector Space" に記述があったが，特に理由は書いていなかった．
 
-{% highlight C %}
-alpha = starting_alpha * (1 - word_count_actual / (real)(iter * train_words + 1));
-{% endhighlight %}
-
-<https://code.google.com/p/word2vec/source/browse/trunk/word2vec.c#384>
-
-まあそういうものか．
 
 # その他
 
@@ -96,7 +90,7 @@ alpha = starting_alpha * (1 - word_count_actual / (real)(iter * train_words + 1)
 ## syn0, syn1neg の定義
 `syn0`, `syn1neg` は，それぞれ単語, Negative sample のベクトルを1行に並べた配列である．
 
-例えば，`sen[n]` に対応する単語の単語ベクトルに対応する部分は，`syn0[sen[n] * layer1_size]`,...,`syn0[sen[n] * layer1_size + (layer1_size - 1)]` で得られる．ただし，`layer1_size` は単語ベクトルの次元である．
+例えば，`sen[n]` に対応する単語の単語ベクトルに対応する部分は，`syn0[sen[n] * layer1_size]`,...,`syn0[sen[n] * layer1_size + (layer1_size - 1)]` で得られる．ここで，`layer1_size` は単語ベクトルの次元数である．
 
 
 # 感想
